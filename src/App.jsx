@@ -101,7 +101,7 @@ function MoviesList({ movies }) {
     </ul>
   );
 }
-function ListBox({ children }) {
+function Box({ children }) {
   const [isOpen1, setIsOpen1] = useState(true);
   return (
     <div className="box">
@@ -169,20 +169,7 @@ function Summary({ watched }) {
     </div>
   );
 }
-function WatchedBox({ children }) {
-  const [isOpen2, setIsOpen2] = useState(true);
-  return (
-    <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen2((open) => !open)}
-      >
-        {isOpen2 ? "–" : "+"}
-      </button>
-      {isOpen2 && <>{children}</>}
-    </div>
-  );
-}
+
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
@@ -197,13 +184,13 @@ export default function App() {
         <NumResults movies={movies} />
       </Navbar>
       <Main>
-        <ListBox>
+        <Box>
           <MoviesList movies={movies} />
-        </ListBox>
-        <WatchedBox>
+        </Box>
+        <Box>
           <Summary watched={watched} />
           <WatchedMoviesList watched={watched} />
-        </WatchedBox>
+        </Box>
       </Main>
     </>
   );
