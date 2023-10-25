@@ -79,9 +79,9 @@ function Search() {
   );
 }
 function NumResults({ movies }) {
-  <p className="num-results">
+  return(<p className="num-results">
     Found <strong>{movies.length}</strong> results
-  </p>;
+  </p>)
 }
 function MoviesList({ movies }) {
   return (
@@ -102,16 +102,16 @@ function MoviesList({ movies }) {
   );
 }
 function Box({ children }) {
-  const [isOpen1, setIsOpen1] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="box">
       <button
         className="btn-toggle"
-        onClick={() => setIsOpen1((open) => !open)}
+        onClick={() => setIsOpen((open) => !open)}
       >
-        {isOpen1 ? "–" : "+"}
+        {isOpen ? "–" : "+"}
       </button>
-      {isOpen1 && children}
+      {isOpen && children}
     </div>
   );
 }
@@ -122,7 +122,7 @@ function WatchedMoviesList({ watched }) {
         <li key={movie.imdbID}>
           <img src={movie.Poster} alt={`${movie.Title} poster`} />
           <h3>{movie.Title}</h3>
-          <div>
+          <div className="stats">
             <p>
               <span>⭐️</span>
               <span>{movie.imdbRating}</span>
@@ -148,7 +148,7 @@ function Summary({ watched }) {
   return (
     <div className="summary">
       <h2>Movies you watched</h2>
-      <div>
+      <div className="stats">
         <p>
           <span>#️⃣</span>
           <span>{watched.length} movies</span>
