@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const tempMovieData = [
   {
@@ -79,9 +79,11 @@ function Search() {
   );
 }
 function NumResults({ movies }) {
-  return(<p className="num-results">
-    Found <strong>{movies.length}</strong> results
-  </p>)
+  return (
+    <p className="num-results">
+      Found <strong>{movies?.length}</strong> results
+    </p>
+  );
 }
 function MoviesList({ movies }) {
   return (
@@ -105,10 +107,7 @@ function Box({ children }) {
   const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen((open) => !open)}
-      >
+      <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
         {isOpen ? "–" : "+"}
       </button>
       {isOpen && children}
@@ -169,13 +168,46 @@ function Summary({ watched }) {
     </div>
   );
 }
-
+const key = "c76289d";
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
+
+function ErrorMessage({ error }) {
+  return (
+    <div className="error">
+      <span>⛔</span>
+      {error}
+    </div>
+  );
+}
+function Loader() {
+  return <div className="loader">Loading...</div>;
+}
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `https://www.omdbapi.com/?apikey=${key}&s=interstellar`
+        );
+        if (!res.ok) throw new Error("Something went wrong");
+        const data = await res.json();
+        if (data.Response === "False") throw new Error("Movie not found!");
+        setMovies(data.Search);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchMovies();
+  }, []);
 
   return (
     <>
@@ -185,7 +217,13 @@ export default function App() {
       </Navbar>
       <Main>
         <Box>
-          <MoviesList movies={movies} />
+          {error ? (
+            <ErrorMessage error={error} />
+          ) : isLoading ? (
+            <Loader />
+          ) : (
+            <MoviesList movies={movies} />
+          )}
         </Box>
         <Box>
           <Summary watched={watched} />
