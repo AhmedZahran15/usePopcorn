@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { MovieDetails } from "./MovieDetails";
-import { WatchedMoviesList } from "./WatchedMoviesList";
-import { Box } from "./Box";
-import { MoviesList } from "./MoviesList";
-import { Loader } from "./Loader";
-import { ErrorMessage } from "./ErrorMessage";
-import { Main } from "./Main.1";
-import { Summary } from "./Summary";
-import { NumResults } from "./NumResults";
-import { Search } from "./Search";
-import { Navbar } from "./Navbar";
+import { MovieDetails } from "./components/MovieDetails";
+import { WatchedMoviesList } from "./components/WatchedMoviesList";
+import { Box } from "./components/Box";
+import { MoviesList } from "./components/MoviesList";
+import { Loader } from "./components/Loader";
+import { ErrorMessage } from "./components/ErrorMessage";
+import { Main } from "./components/Main.1";
+import { Summary } from "./components/Summary";
+import { NumResults } from "./components/NumResults";
+import { Search } from "./components/Search";
+import { Navbar } from "./components/Navbar";
 export const key = "c76289d";
 
 export default function App() {

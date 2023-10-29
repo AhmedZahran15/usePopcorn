@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
-import { key } from "./App";
+import { key } from "../App";
 import { Loader } from "./Loader";
 
 export function MovieDetails({
