@@ -117,7 +117,7 @@ function Box({ children }) {
     </div>
   );
 }
-function WatchedMoviesList({ watched , removeAddHandle }) {
+function WatchedMoviesList({ watched, removeAddHandle }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
@@ -140,7 +140,7 @@ function WatchedMoviesList({ watched , removeAddHandle }) {
           </div>
           <button className="btn-delete" onClick={() => removeAddHandle(movie)}>
             -
-            </button>
+          </button>
         </li>
       ))}
     </ul>
@@ -159,7 +159,6 @@ export default function App() {
   }
   function onCloseMovie() {
     setSelectedMovieID(null);
-    document.title = "usePopcorn";
   }
   function handleAddToWatched(movie) {
     setWatched((watched) => [...watched, movie]);
@@ -168,18 +167,21 @@ export default function App() {
     setWatched((watched) => watched.filter((m) => m.imdbID !== movie.imdbID));
   }
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchMovies() {
       try {
         setError("");
         setIsLoading(true);
         const res = await fetch(
           `https://www.omdbapi.com/?apikey=${key}&s=${query}`
-        );
+        ,{signal: controller.signal});
         if (!res.ok) throw new Error("Something went wrong");
         const data = await res.json();
         if (data.Response === "False") throw new Error("Movie not found!");
         setMovies(data.Search);
+        setError("");
       } catch (err) {
+        if (err.name === "AbortError") return;
         setError(err.message);
       } finally {
         setIsLoading(false);
@@ -191,6 +193,9 @@ export default function App() {
       return;
     }
     fetchMovies();
+    return () => {
+      controller.abort();
+    }
   }, [query]);
 
   return (
@@ -223,7 +228,10 @@ export default function App() {
           ) : (
             <>
               <Summary watched={watched} />
-              <WatchedMoviesList watched={watched} removeAddHandle={removeAddHandle} />
+              <WatchedMoviesList
+                watched={watched}
+                removeAddHandle={removeAddHandle}
+              />
             </>
           )}
         </Box>
@@ -284,10 +292,12 @@ function MovieDetails({
     fetchMovie();
   }, [selectedMovieID]);
   useEffect(() => {
-    if(!title) return;
+    if (!title) return;
     document.title = `${title} | usePopcorn`;
-  }
-  , [title]);
+    return () => {
+      document.title = "usePopcorn";
+    };
+  }, [title]);
   return (
     <div className="details">
       {isLoading ? (
