@@ -53,15 +53,15 @@ function Summary({ watched }) {
         </p>
         <p>
           <span>⭐️</span>
-          <span>{avgImdbRating}</span>
+          <span>{avgImdbRating.toFixed(2)}</span>
         </p>
         <p>
           <span>🌟</span>
-          <span>{avgUserRating}</span>
+          <span>{avgUserRating.toFixed(2)}</span>
         </p>
         <p>
           <span>⏳</span>
-          <span>{avgRuntime} min</span>
+          <span>{avgRuntime.toFixed(2)} min</span>
         </p>
       </div>
     </div>
@@ -117,13 +117,13 @@ function Box({ children }) {
     </div>
   );
 }
-function WatchedMoviesList({ watched }) {
+function WatchedMoviesList({ watched , removeAddHandle }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
         <li key={movie.imdbID}>
-          <img src={movie.Poster} alt={`${movie.Title} poster`} />
-          <h3>{movie.Title}</h3>
+          <img src={movie.poster} alt={`${movie.title} poster`} />
+          <h3>{movie.title}</h3>
           <div className="stats">
             <p>
               <span>⭐️</span>
@@ -138,6 +138,9 @@ function WatchedMoviesList({ watched }) {
               <span>{movie.runtime} min</span>
             </p>
           </div>
+          <button className="btn-delete" onClick={() => removeAddHandle(movie)}>
+            -
+            </button>
         </li>
       ))}
     </ul>
@@ -156,6 +159,13 @@ export default function App() {
   }
   function onCloseMovie() {
     setSelectedMovieID(null);
+    document.title = "usePopcorn";
+  }
+  function handleAddToWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
+  }
+  function removeAddHandle(movie) {
+    setWatched((watched) => watched.filter((m) => m.imdbID !== movie.imdbID));
   }
   useEffect(() => {
     async function fetchMovies() {
@@ -204,11 +214,16 @@ export default function App() {
             <MovieDetails
               selectedMovieID={selectedMovieID}
               onCloseMovie={onCloseMovie}
+              handleAddToWatched={handleAddToWatched}
+              userRate={
+                watched.find((movie) => movie.imdbID === selectedMovieID)
+                  ?.userRating
+              }
             />
           ) : (
             <>
               <Summary watched={watched} />
-              <WatchedMoviesList watched={watched} />
+              <WatchedMoviesList watched={watched} removeAddHandle={removeAddHandle} />
             </>
           )}
         </Box>
@@ -216,9 +231,15 @@ export default function App() {
     </>
   );
 }
-function MovieDetails({ selectedMovieID, onCloseMovie }) {
+function MovieDetails({
+  selectedMovieID,
+  onCloseMovie,
+  handleAddToWatched,
+  userRate,
+}) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [rating, setRating] = useState(0);
   const {
     Title: title,
     Year: year,
@@ -231,6 +252,19 @@ function MovieDetails({ selectedMovieID, onCloseMovie }) {
     Director: director,
     Genre: genre,
   } = movie;
+
+  function handleAdd() {
+    const newMovie = {
+      imdbID: selectedMovieID,
+      title,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ")[0]),
+      userRating: rating,
+    };
+    handleAddToWatched(newMovie);
+    onCloseMovie();
+  }
   useEffect(() => {
     async function fetchMovie() {
       try {
@@ -249,6 +283,11 @@ function MovieDetails({ selectedMovieID, onCloseMovie }) {
     }
     fetchMovie();
   }, [selectedMovieID]);
+  useEffect(() => {
+    if(!title) return;
+    document.title = `${title} | usePopcorn`;
+  }
+  , [title]);
   return (
     <div className="details">
       {isLoading ? (
@@ -274,7 +313,20 @@ function MovieDetails({ selectedMovieID, onCloseMovie }) {
           </header>
           <section>
             <div className="rating">
-              <StarRating maxRating={10} />
+              {userRate ? (
+                <p className="rated">
+                  You rated this movie {userRate} <span>&#11088;</span>
+                </p>
+              ) : (
+                <>
+                  <StarRating maxRating={10} onSetRating={setRating} />
+                  {rating > 0 && (
+                    <button className="btn-add" onClick={handleAdd}>
+                      Add to list
+                    </button>
+                  )}
+                </>
+              )}
             </div>
             <p>
               <em>{plot}</em>
