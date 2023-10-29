@@ -2,13 +2,12 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const containerStyle = {
+  padding: "0",
+  width: "100%",
   display: "flex",
   alignItems: "center",
-  gap: "16px",
-};
-
-const starContainerStyle = {
-  display: "flex",
+  justifyContent: "space-between",
+  gap: "0px",
 };
 
 StarRating.propTypes = {
@@ -30,6 +29,12 @@ export default function StarRating({
   defaultRating = 0,
   onSetRating,
 }) {
+  const starContainerStyle = {
+    padding: "0",
+    width: "90%",
+    display: "grid",
+    gridTemplateColumns: `repeat(${maxRating}, 1fr)`,
+  };
   const [rating, setRating] = useState(defaultRating);
   const [tempRating, setTempRating] = useState(0);
 
@@ -39,10 +44,10 @@ export default function StarRating({
   }
 
   const textStyle = {
+    alignSelf: "center",
     lineHeight: "1",
-    margin: "0",
     color,
-    fontSize: `${size / 1.5}px`,
+    fontSize: `${size / 1.4}px`,
   };
 
   return (
@@ -56,7 +61,6 @@ export default function StarRating({
             onHoverIn={() => setTempRating(i + 1)}
             onHoverOut={() => setTempRating(0)}
             color={color}
-            size={size}
           />
         ))}
       </div>
@@ -77,10 +81,10 @@ Star.propTypes = {
   color: PropTypes.string,
   size: PropTypes.number,
 };
-function Star({ onRate, full, onHoverIn, onHoverOut, color, size }) {
+function Star({ onRate, full, onHoverIn, onHoverOut, color }) {
   const starStyle = {
-    width: `${size}px`,
-    height: `${size}px`,
+    marginTop: "5px",
+    width: "100%",
     display: "block",
     cursor: "pointer",
   };
