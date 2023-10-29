@@ -94,7 +94,24 @@ body {
   font-weight: 600;
   color: #fff;
 }
-
+@media screen and (max-width: 768px) {
+  .nav-bar{
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+  }
+  .logo{
+    display: none;
+  }
+  .search{
+    max-width:25rem;
+  }
+}
+@media screen and (max-width: 820px) and (min-width: 768px){
+  .search{
+    max-width:30rem;
+  }
+  
+}
 .search {
   justify-self: center;
   border: none;
