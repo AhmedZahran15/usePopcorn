@@ -10,7 +10,7 @@ import { Summary } from "./components/Summary";
 import { NumResults } from "./components/NumResults";
 import { Search } from "./components/Search";
 import { Navbar } from "./components/Navbar";
-import { useLocalStorageState } from "./useLocalStorageState";
+import { useLocalStorageState } from "./custom hooks/useLocalStorageState";
 export const key = "c76289d";
 
 export default function App() {
