@@ -34,7 +34,6 @@ export default function App() {
   function removeAddHandle(movie) {
     setWatched((watched) => watched.filter((m) => m.imdbID !== movie.imdbID));
   }
-  
 
   useEffect(() => {
     const controller = new AbortController();

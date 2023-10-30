@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { key } from "../App";
 import { Loader } from "./Loader";
+import { useKey } from "../useKey";
 
 export function MovieDetails({
   selectedMovieID,
@@ -24,10 +25,10 @@ export function MovieDetails({
     Director: director,
     Genre: genre,
   } = movie;
-  const count =useRef(0);
+  const count = useRef(0);
 
   useEffect(() => {
-    if(rating===0) return;
+    if (rating === 0) return;
     count.current++;
   }, [rating]);
   function handleAdd() {
@@ -38,20 +39,13 @@ export function MovieDetails({
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ")[0]),
       userRating: rating,
-      countUserRating: count.current
+      countUserRating: count.current,
     };
     handleAddToWatched(newMovie);
     onCloseMovie();
   }
-  useEffect(() => {
-    function callback(e) {
-      if (e.key === "Escape") onCloseMovie();
-    }
-    document.addEventListener("keydown", callback);
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, [onCloseMovie]);
+  useKey("Escape", onCloseMovie);
+
   useEffect(() => {
     async function fetchMovie() {
       try {
