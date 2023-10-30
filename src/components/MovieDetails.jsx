@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { key } from "../App";
 import { Loader } from "./Loader";
@@ -24,7 +24,12 @@ export function MovieDetails({
     Director: director,
     Genre: genre,
   } = movie;
+  const count =useRef(0);
 
+  useEffect(() => {
+    if(rating===0) return;
+    count.current++;
+  }, [rating]);
   function handleAdd() {
     const newMovie = {
       imdbID: selectedMovieID,
@@ -33,6 +38,7 @@ export function MovieDetails({
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ")[0]),
       userRating: rating,
+      countUserRating: count.current
     };
     handleAddToWatched(newMovie);
     onCloseMovie();

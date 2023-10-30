@@ -10,6 +10,7 @@ import { Summary } from "./components/Summary";
 import { NumResults } from "./components/NumResults";
 import { Search } from "./components/Search";
 import { Navbar } from "./components/Navbar";
+import { useLocalStorageState } from "./useLocalStorageState";
 export const key = "c76289d";
 
 export default function App() {
@@ -18,10 +19,7 @@ export default function App() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedMovieID, setSelectedMovieID] = useState(null);
-  const [watched, setWatched] = useState(function () {
-    const data = localStorage.getItem("watched");
-    return data ? JSON.parse(data) : [];
-  });
+  const [watched, setWatched] = useLocalStorageState("watched", []);
 
   function onSelectMovie(id) {
     setSelectedMovieID(id === selectedMovieID ? null : id);
@@ -36,10 +34,7 @@ export default function App() {
   function removeAddHandle(movie) {
     setWatched((watched) => watched.filter((m) => m.imdbID !== movie.imdbID));
   }
-  useEffect(() => {
-    localStorage.setItem("watched", JSON.stringify(watched));
-  }
-  , [watched]);
+  
 
   useEffect(() => {
     const controller = new AbortController();
